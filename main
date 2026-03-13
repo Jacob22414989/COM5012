@@ -3,7 +3,7 @@
 
 using namespace std;
 
-class LibraryItem {
+class book {
 	protected:
 		int id;
 		string title;
@@ -12,6 +12,9 @@ class LibraryItem {
 		int chechedOutOn;
 
 	public:
-		LibraryItem(int id, const string& title )
+		book(int id, const string& title )
 			: id(id), title(title),isAvailable(true), reservedBy(0), chechedOutOn(0) {}
 };
+
+
+
