@@ -1,0 +1,17 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class LibraryItem {
+	protected:
+		int id;
+		string title;
+		bool isAvailable;
+		int reservedBy;
+		int chechedOutOn;
+
+	public:
+		LibraryItem(int id, const string& title )
+			: id(id), title(title),isAvailable(true), reservedBy(0), chechedOutOn(0) {}
+};
