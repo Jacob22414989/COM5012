@@ -103,3 +103,88 @@ public:
     virtual void showMenu()        const = 0;
     virtual void handleMenu(Library&) = 0;
 };
+
+
+class Library {
+private:
+    vector<LibraryItem*> items;
+    vector<User*>        users;
+    int nextItemId = 1;
+    int nextUserId = 1;
+
+    static void hdr(const string& t) {
+        cout << "\n\n"
+            << "  " << t << "\n"
+            << "\n";
+    }
+
+public:
+    Library();
+    ~Library() {
+        for (auto p : items) delete p;
+        for (auto p : users) delete p;
+    }
+
+    void showAllItems() const {
+        hdr("ALL ITEMS");
+        for (auto& i : items) i->displayInfo();
+    }
+    void showAvailableItems() const {
+        hdr("AVAILABLE ITEMS");
+        bool any = false;
+        for (auto& i : items) if (i->isAvailable()) { i->displayInfo(); any = true; }
+        if (!any) cout << "  Nothing available right now.\n";
+    }
+    void searchItems(const string& kw) const {
+        hdr("SEARCH: \"" + kw + "\"");
+        string k = kw;
+        transform(k.begin(), k.end(), k.begin(), ::tolower);
+        bool any = false;
+        for (auto& i : items) {
+            string t = i->getTitle(), a = i->getAuthor();
+            transform(t.begin(), t.end(), t.begin(), ::tolower);
+            transform(a.begin(), a.end(), a.begin(), ::tolower);
+            if (t.find(k) != string::npos || a.find(k) != string::npos)
+            {
+                i->displayInfo(); any = true;
+            }
+        }
+        if (!any) cout << "  No results.\n";
+    }
+
+    void checkOutItem(int itemId, int userId) {
+        for (auto& i : items) {
+            if (i->getId() == itemId) {
+                if (i->checkOut(userId))
+                    cout << "  \xE2\x9C\x93 Checked out: \"" << i->getTitle() << "\"\n";
+                else
+                    cout << "  \xE2\x9C\x97 \"" << i->getTitle() << "\" is not available.\n";
+                return;
+            }
+        }
+        cout << "  \xE2\x9C\x97 Item #" << itemId << " not found.\n";
+    }
+    void returnItem(int itemId) {
+        for (auto& i : items) {
+            if (i->getId() == itemId) {
+                if (i->returnBook())
+                    cout << "  \xE2\x9C\x93 Returned: \"" << i->getTitle() << "\"\n";
+                else
+                    cout << "  \xE2\x9C\x97 That item was not checked out.\n";
+                return;
+            }
+        }
+        cout << "  \xE2\x9C\x97 Item #" << itemId << " not found.\n";
+    }
+    void reserveItem(int itemId, int userId) {
+        for (auto& i : items) {
+            if (i->getId() == itemId) {
+                if (i->reserve(userId))
+                    cout << "  \xE2\x9C\x93 Reserved: \"" << i->getTitle() << "\"\n";
+                else
+                    cout << "  \xE2\x9C\x97 Cannot reserve: item unavailable or already reserved.\n";
+                return;
+            }
+        }
+        cout << "  \xE2\x9C\x97 Item #" << itemId << " not found.\n";
+    }
