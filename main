@@ -1,11 +1,62 @@
 #include <iostream>
+#include <vector>
 #include <string>
+#include <algorithm>
+#include <limits>
 
 using namespace std;
 
-class user;
-class lirary;
+class Library;
+class Customer;
+class Librarian;
 
+class LibraryItem {
+protected:
+    int    id;
+    string title;
+    string author;
+    int    year;
+    bool   available;
+    int    checkedOutBy;
+    int    reservedBy;
+
+public:
+    LibraryItem(int id, const string& title, const string& author, int year)
+        : id(id), title(title), author(author), year(year),
+        available(true), checkedOutBy(0), reservedBy(0) {
+    }
+
+    virtual ~LibraryItem() {}
+
+    int    getId()           const { return id; }
+    string getTitle()        const { return title; }
+    string getAuthor()       const { return author; }
+    bool   isAvailable()     const { return available; }
+    int    getCheckedOutBy() const { return checkedOutBy; }
+    int    getReservedBy()   const { return reservedBy; }
+
+    bool checkOut(int userId) {
+        if (!available) return false;
+        available = false;
+        checkedOutBy = userId;
+        reservedBy = 0;
+        return true;
+    }
+    bool returnBook() {
+        if (available) return false;
+        available = true;
+        checkedOutBy = 0;
+        return true;
+    }
+    bool reserve(int userId) {
+        if (!available || reservedBy != 0) return false;
+        reservedBy = userId;
+        return true;
+    }
+
+    virtual string getType()     const = 0;
+    virtual void   displayInfo() const = 0;
+};
 
 class book {
 	protected:
@@ -30,10 +81,22 @@ class book {
 	bool checkout(int id) {
 		if (!isAvailable) return false;
 		available = false;
-		checkedOutBy = userid;
+		checkedOutBy = userId;
 		return true;
 	}
 		
 
+
+};
+
+class user{
+	protected:
+		int userId;
+		string name;
+		string password;
+
+	public:
+		user(int id, const string&name, const string&password)
+		: userId(id), name(name), password(password) {}
 
 };
