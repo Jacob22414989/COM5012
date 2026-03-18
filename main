@@ -188,3 +188,29 @@ public:
         }
         cout << "  \xE2\x9C\x97 Item #" << itemId << " not found.\n";
     }
+
+    // librarian
+    void addBookPrompt() {
+        string title, author, genre, isbn;
+        int year, pages;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "  Title   : "; getline(cin, title);
+        cout << "  Author  : "; getline(cin, author);
+        cout << "  Genre   : "; getline(cin, genre);
+        cout << "  Year    : "; cin >> year;
+        cout << "  Pages   : "; cin >> pages;
+        cin.ignore(); cout << "  ISBN    : "; getline(cin, isbn);
+        int nid = nextItemId++;
+        items.push_back(new Book(nid, title, author, year, genre, pages, isbn));
+        cout << "  \xE2\x9C\x93 Book added (ID #" << nid << ").\n";
+    }
+    void removeItem(int itemId) {
+        for (auto it = items.begin(); it != items.end(); ++it) {
+            if ((*it)->getId() == itemId) {
+                cout << "  \xE2\x9C\x93 Removed: \"" << (*it)->getTitle() << "\"\n";
+                delete* it; items.erase(it); return;
+            }
+        }
+        cout << "  \xE2\x9C\x97 Item #" << itemId << " not found.\n";
+    }
+};
