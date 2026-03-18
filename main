@@ -213,4 +213,17 @@ public:
         }
         cout << "  \xE2\x9C\x97 Item #" << itemId << " not found.\n";
     }
+    // manager
+    void listUsers()  const;
+    void addUserPrompt(const string& role);
+    void removeUser(int userId);
+
+    User* findUser(const string& name, const string& pwd) {
+        for (auto& u : users)
+            if (u->getName() == name && u->authenticate(pwd)) return u;
+        return nullptr;
+    }
+    int  getNextUserId() { return nextUserId++; }
+    void addUser(User* u) { users.push_back(u); }
 };
+
