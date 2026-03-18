@@ -304,3 +304,88 @@ public:
         }
     }
 };
+
+class Manager : public Librarian {
+public:
+    Manager(int id, const string& name, const string& pwd)
+        : Librarian(id, name, pwd) {
+        role = "Manager";
+    }
+
+    void showMenu() const override {
+        cout << "\n  Manager Menu (" << name << ")\n"
+            << "    Library Items \n"
+            << "    1.  Browse all items                           \n"
+            << "    2.  Search items                               \n"
+            << "    3.  Check out item                             \n"
+            << "    4.  Return item                                \n"
+            << "    5.  Reserve item                               \n"
+            << "    6.  Add new Book                               \n"
+            << "    7.  Remove item                                \n"
+            << "    User Management \n"
+            << "    8.  List all users                             \n"
+            << "    9. Add new Customer                            \n"
+            << "    10. Add new Librarian                          \n"
+            << "    11 Remove a user                               \n"
+            << "    0.  Logout                                     \n"
+            << "  \n";
+    }
+
+    void handleMenu(Library& lib) override {
+        int ch;
+        while (true) {
+            showMenu();
+            cout << "  Choice: "; cin >> ch;
+            if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); continue; }
+            switch (ch) {
+            case 1:  lib.showAllItems(); break;
+            case 2: { string k; cin.ignore(); cout << "  Keyword: "; getline(cin, k); lib.searchItems(k); break; }
+            case 3: { int id; cout << "  Item ID: "; cin >> id; lib.checkOutItem(id, this->id); break; }
+            case 4: { int id; cout << "  Item ID: "; cin >> id; lib.returnItem(id); break; }
+            case 5: { int id; cout << "  Item ID: "; cin >> id; lib.reserveItem(id, this->id); break; }
+            case 6:  lib.addBookPrompt(); break;
+            case 7: { int id; cout << "  Item ID: "; cin >> id; lib.removeItem(id); break; }
+            case 8:  lib.listUsers(); break;
+            case 9: lib.addUserPrompt("Customer");  break;
+            case 10: lib.addUserPrompt("Librarian"); break;
+            case 11: { int id; cout << "  User ID: "; cin >> id; lib.removeUser(id); break; }
+            case 0:  cout << "  Logged out.\n"; return;
+            default: cout << "  Invalid option.\n";
+            }
+        }
+    }
+};
+
+void Library::listUsers() const {
+    hdr("ALL USERS");
+    for (auto& u : users)
+        cout << "  #" << u->getId() << "  [" << u->getRole() << "]  " << u->getName() << "\n";
+}
+
+void Library::addUserPrompt(const string& role) {
+    string name, pwd;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "  Name     : "; getline(cin, name);
+    cout << "  Password : "; getline(cin, pwd);
+    int uid = getNextUserId();
+    User* u = (role == "Customer")
+        ? static_cast<User*>(new Customer(uid, name, pwd))
+        : static_cast<User*>(new Librarian(uid, name, pwd));
+    addUser(u);
+    cout << "  \xE2\x9C\x93 " << role << " \"" << name << "\" created (ID #" << uid << ").\n";
+}
+
+void Library::removeUser(int userId) {
+    for (auto it = users.begin(); it != users.end(); ++it) {
+        if ((*it)->getId() == userId) {
+            if ((*it)->getRole() == "Manager") {
+                cout << "  \xE2\x9C\x97 Cannot remove a Manager account.\n"; return;
+            }
+            cout << "  \xE2\x9C\x93 Removed user: \"" << (*it)->getName()
+                << "\" [" << (*it)->getRole() << "]\n";
+            delete* it; users.erase(it); return;
+        }
+    }
+    cout << "  \xE2\x9C\x97 User #" << userId << " not found.\n";
+}
+
