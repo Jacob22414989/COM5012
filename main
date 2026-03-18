@@ -262,3 +262,45 @@ public:
         }
     }
 };
+
+
+class Librarian : public Customer {
+public:
+    Librarian(int id, const string& name, const string& pwd)
+        : Customer(id, name, pwd) {
+        role = "Librarian";
+    }
+
+    void showMenu() const override {
+        cout << "\n  Librarian Menu (" << name << ") \n"
+            << "    1. Browse all items                            \n"
+            << "    2. Search items                                \n"
+            << "    3. Check out item                              \n"
+            << "    4. Return item                                 \n"
+            << "    5. Reserve item                                \n"
+            << "    6. Add new Book                                \n"
+            << "    7. Remove item                                 \n"
+            << "    0. Logout                                      \n"
+            << "  \n";
+    }
+
+    void handleMenu(Library& lib) override {
+        int ch;
+        while (true) {
+            showMenu();
+            cout << "  Choice: "; cin >> ch;
+            if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); continue; }
+            switch (ch) {
+            case 1: lib.showAllItems(); break;
+            case 2: { string k; cin.ignore(); cout << "  Keyword: "; getline(cin, k); lib.searchItems(k); break; }
+            case 3: { int id; cout << "  Item ID: "; cin >> id; lib.checkOutItem(id, this->id); break; }
+            case 4: { int id; cout << "  Item ID: "; cin >> id; lib.returnItem(id); break; }
+            case 5: { int id; cout << "  Item ID: "; cin >> id; lib.reserveItem(id, this->id); break; }
+            case 6: lib.addBookPrompt(); break;
+            case 7: { int id; cout << "  Item ID: "; cin >> id; lib.removeItem(id); break; }
+            case 0: cout << "  Logged out.\n"; return;
+            default: cout << "  Invalid option.\n";
+            }
+        }
+    }
+};
