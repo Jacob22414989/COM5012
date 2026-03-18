@@ -402,3 +402,35 @@ Library::Library() {
     users.push_back(new Customer(nextUserId++, "bob", "bob123"));
     users.push_back(new Customer(nextUserId++, "diana", "diana123"));
 }
+
+
+int main() {
+    Library lib;
+
+    cout << "\n"
+        << "  +======================================================+\n"
+        << "  |          LIBRARY MANAGEMENT SYSTEM                   |\n"
+        << "  +------------------------------------------------------+\n"
+        << "  |  Manager   : admin    / admin123                     |\n"
+        << "  |  Librarian : alice    / alice123                     |\n"
+        << "  |  Librarian : mario    / mario123                     |\n"
+        << "  |  Customer  : bob      / bob123                       |\n"
+        << "  |  Customer  : charlie  / charlie123                   |\n"
+        << "  |  Customer  : diana    / diana123                     |\n"
+        << "  +======================================================+\n";
+
+    while (true) {
+        cout << "\n  -- Login (type 'quit' to exit) --\n";
+        string name, pwd;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "  Username : "; getline(cin, name);
+        if (name == "quit") { cout << "\n  Goodbye!\n\n"; break; }
+        cout << "  Password : "; getline(cin, pwd);
+
+        User* u = lib.findUser(name, pwd);
+        if (!u) { cout << "  Incorrect username or password.\n"; continue; }
+        cout << "\n  Welcome, " << u->getName() << "!  Role: " << u->getRole() << "\n";
+        u->handleMenu(lib);
+    }
+    return 0;
+}
