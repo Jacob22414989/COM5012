@@ -389,3 +389,16 @@ void Library::removeUser(int userId) {
     cout << "  \xE2\x9C\x97 User #" << userId << " not found.\n";
 }
 
+// items
+Library::Library() {
+    items.push_back(new Book(nextItemId++, "The Great Gatsby", "F. Scott Fitzgerald", 1925, "Classic", 180, "978-0743273565"));
+    items.push_back(new Book(nextItemId++, "Clean Code", "Robert C. Martin", 2008, "Tech", 431, "978-0132350884"));
+    items.push_back(new Book(nextItemId++, "Dune", "Frank Herbert", 1965, "Sci-Fi", 412, "978-0441013593"));
+    items.push_back(new Book(nextItemId++, "1984", "George Orwell", 1949, "Dystopia", 328, "978-0451524935"));
+
+    users.push_back(new Manager(nextUserId++, "admin", "admin123"));
+    users.push_back(new Librarian(nextUserId++, "alice", "alice123"));
+    users.push_back(new Librarian(nextUserId++, "mario", "mario123"));
+    users.push_back(new Customer(nextUserId++, "bob", "bob123"));
+    users.push_back(new Customer(nextUserId++, "diana", "diana123"));
+}
